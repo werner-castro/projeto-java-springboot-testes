@@ -9,7 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity(name = " `USER` ")
+@Entity(name = "tb_user")
 public class User {
 
     @Id
@@ -19,5 +19,5 @@ public class User {
 
     @Column(unique = true)
     private String email;
-    private String passwod;
+    private String password;
 }
