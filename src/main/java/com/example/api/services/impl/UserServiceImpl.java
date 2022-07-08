@@ -32,6 +32,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User update(UserDTO obj) {
+        // fazendo o tratamento de exceção para email já cadastrado no sistema
+        findByEmail(obj);
+        return repository.save(mapper.map(obj, User.class));
+    }
+
+    @Override
     public User findById(Integer id) {
         Optional<User> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado"));
@@ -43,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     public void findByEmail(UserDTO obj){
         Optional<User> user = repository.findByEmail(obj.getEmail());
-        if(user.isPresent()){
+        if( user.isPresent() && !user.get().getId().equals(obj.getId()) ){
             throw new DataIntegralityViolationException("E-mail já cadastrado no sistema");
         }
     }

@@ -30,6 +30,19 @@ public class UserController {
         return ResponseEntity.created(uri).build();
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> findAll(){
+        return ResponseEntity.ok().body(
+                service.findAll().stream().map(x -> mapper.map(x, UserDTO.class)).collect(Collectors.toList())
+        );
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO obj){
+        obj.setId(id);
+        return ResponseEntity.ok().body(mapper.map(service.update(obj), UserDTO.class));
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id){
         return ResponseEntity.ok().body(
@@ -37,10 +50,4 @@ public class UserController {
         );
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll(){
-        return ResponseEntity.ok().body(
-                service.findAll().stream().map(x -> mapper.map(x, UserDTO.class)).collect(Collectors.toList())
-        );
-    }
 }
