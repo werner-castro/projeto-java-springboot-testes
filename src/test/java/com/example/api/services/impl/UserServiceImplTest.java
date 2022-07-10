@@ -21,9 +21,9 @@ import java.util.Optional;
 class UserServiceImplTest {
 
     // criando um User para teste
-    public static final Integer ID      = 1;
-    public static final String NAME     = "werner";
-    public static final String EMAIL    = "werner@gmail.com";
+    public static final Integer ID = 1;
+    public static final String NAME = "werner";
+    public static final String EMAIL = "werner@gmail.com";
     public static final String PASSWORD = "admin";
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
     public static final int INDEX = 0;
@@ -47,6 +47,13 @@ class UserServiceImplTest {
     private UserDTO userDTO;
     private Optional<User> optionalUser;
 
+    // criando um método para startar os mocks, que serão repassados na classe setUp
+    private void startUser(){
+        user = new User(ID, NAME, EMAIL, PASSWORD);
+        userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD);
+        optionalUser = Optional.of(new User(ID, NAME, EMAIL, PASSWORD));
+    }
+
     // método que inicia os mocks antes do teste
     @BeforeEach
     void setUp() {
@@ -56,7 +63,28 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnSuccess() {
+
+        // criando o mock do método a ser testado: repository.save()
+        Mockito.when(repository.save(Mockito.any())).thenReturn(user);
+
+        // fazendo a requsição no método a ser testado
+        User response = service.create(userDTO);
+
+        // teste: verificação de não nulidade
+        Assertions.assertNotNull(response);
+
+        // teste: verifica a classe restornada é do tipo User
+        Assertions.assertEquals(User.class, response.getClass());
+
+        // teste: verifica se ID enviado na requisição é igual ao ID do response
+        Assertions.assertEquals(ID, response.getId());
+
+        // teste: verifica se NAME enviado na requisição é igual ao NAME do response
+        Assertions.assertEquals(NAME, response.getName());
+
+        // teste: verifica se EMAIL enviado na requisição é igual ao EMAIL do response
+        Assertions.assertEquals(EMAIL, response.getEmail());
     }
 
     @Test
@@ -93,7 +121,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void whenFindByIdThenReturnAnObjectNotFoundException(){
+    void whenFindByIdThenReturnAnObjectNotFoundException() {
         // quando o repository.findbyId for chamado, passamos um Id do tipo inteiro,
         // então retornamos uma excessão informando objeto não encontrado.
         Mockito.when(repository.findById(Mockito.anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
@@ -134,6 +162,9 @@ class UserServiceImplTest {
 
         // teste: verificar se o EMAIL passado na requisição seja igual ao EMAIL do primeiro elemento da lista retornada
         Assertions.assertEquals(EMAIL, response.get(INDEX).getEmail());
+
+        // teste: verificar se o PASSWORD passado na requisição seja igual ao PASSWORD do primeiro elemento da lista retornada
+        Assertions.assertEquals(PASSWORD, response.get(INDEX).getPassword());
     }
 
     @Test
@@ -142,12 +173,5 @@ class UserServiceImplTest {
 
     @Test
     void findByEmail() {
-    }
-
-    // criando um método para startar os mocks, que serão repassados na classe setUp
-    private void startUser(){
-        user = new User(ID, NAME, EMAIL, PASSWORD);
-        userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD);
-        optionalUser = Optional.of(new User(ID, NAME, EMAIL, PASSWORD));
     }
 }
