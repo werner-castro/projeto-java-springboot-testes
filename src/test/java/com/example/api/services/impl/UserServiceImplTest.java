@@ -2,6 +2,7 @@ package com.example.api.services.impl;
 
 import com.example.api.domain.User;
 import com.example.api.domain.dto.UserDTO;
+import com.example.api.services.exceptions.DataIntegralityViolationException;
 import com.example.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,8 @@ class UserServiceImplTest {
     public static final String EMAIL = "werner@gmail.com";
     public static final String PASSWORD = "admin";
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
+
+    public static final String EMAIL_JA_CADATRADO_NO_SISTEMA = "E-mail já cadastrado no sistema";
     public static final int INDEX = 0;
 
     // adicionando as dependências da classe UserService que vai ser testada
@@ -88,6 +91,38 @@ class UserServiceImplTest {
     }
 
     @Test
+    void whenCreateThenReturnDataIntegrityViolationException() {
+
+        // cenário com ID diferente:
+        // quando o utilizador enviar uma requisição para salvar um novo User com um email já existente, o método
+        // findByEmail retorna uma excessão informando que este email já está cadastrado.
+
+        // cenário com ID igual:
+        // nesse caso o método findByEmail entende como uma atualização de User e faz o salvamento do User normalmente,
+        // sem gerar uma excessão.
+
+        // criando o mock do método a ser testado: repository.save()
+        Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(optionalUser);
+
+        try {
+            // alterando o ID do User para forçar uma excessão
+            optionalUser.get().setId(777);
+
+            // fazendo a requsição no método a ser testado
+            service.create(userDTO);
+
+        } catch (Exception ex) {
+
+            // teste: verifique que a excessão da response seja do tipo DataIntegralityViolationException.
+            Assertions.assertEquals(DataIntegralityViolationException.class, ex.getClass());
+
+            // teste: verifique se a mensagem da excessão seja igual à mensagem do DataIntegralityViolationException:
+            // Email já cadrastrado no sistema.
+            Assertions.assertEquals(EMAIL_JA_CADATRADO_NO_SISTEMA, ex.getMessage());
+        }
+    }
+
+    @Test
     void update() {
     }
 
@@ -119,6 +154,8 @@ class UserServiceImplTest {
         // param 2 da validação: reposta retornada pelo teste
         Assertions.assertEquals(User.class, response.getClass());
     }
+
+
 
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException() {
