@@ -125,7 +125,7 @@ class UserServiceImplTest {
     @Test
     void whenUpdateThenReturnSuccess() {
 
-        // criando o mock do método a ser testado: repository.update()
+        // criando o mock do método a ser testado: repository.save()
         Mockito.when(repository.save(Mockito.any())).thenReturn(user);
 
         // fazendo a requsição no método a ser testado
@@ -134,7 +134,7 @@ class UserServiceImplTest {
         // teste: verificação de não nulidade
         Assertions.assertNotNull(response);
 
-        // teste: verifica a classe restornada é do tipo User
+        // teste: verifica se a classe restornada é do tipo User
         Assertions.assertEquals(User.class, response.getClass());
 
         // teste: verifica se ID enviado na requisição é igual ao ID do response
@@ -145,6 +145,20 @@ class UserServiceImplTest {
 
         // teste: verifica se EMAIL enviado na requisição é igual ao EMAIL do response
         Assertions.assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void whenUpdateThenReturnDataIntegrityViolationException() {
+
+        Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(777);
+            service.update(userDTO);
+        } catch (Exception ex) {
+            Assertions.assertEquals(DataIntegralityViolationException.class, ex.getClass());
+            Assertions.assertEquals(EMAIL_JA_CADATRADO_NO_SISTEMA, ex.getMessage());
+        }
     }
 
     @Test
