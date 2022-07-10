@@ -123,7 +123,28 @@ class UserServiceImplTest {
     }
 
     @Test
-    void update() {
+    void whenUpdateThenReturnSuccess() {
+
+        // criando o mock do método a ser testado: repository.update()
+        Mockito.when(repository.save(Mockito.any())).thenReturn(user);
+
+        // fazendo a requsição no método a ser testado
+        User response = service.update(userDTO);
+
+        // teste: verificação de não nulidade
+        Assertions.assertNotNull(response);
+
+        // teste: verifica a classe restornada é do tipo User
+        Assertions.assertEquals(User.class, response.getClass());
+
+        // teste: verifica se ID enviado na requisição é igual ao ID do response
+        Assertions.assertEquals(ID, response.getId());
+
+        // teste: verifica se NAME enviado na requisição é igual ao NAME do response
+        Assertions.assertEquals(NAME, response.getName());
+
+        // teste: verifica se EMAIL enviado na requisição é igual ao EMAIL do response
+        Assertions.assertEquals(EMAIL, response.getEmail());
     }
 
     @Test
@@ -154,8 +175,6 @@ class UserServiceImplTest {
         // param 2 da validação: reposta retornada pelo teste
         Assertions.assertEquals(User.class, response.getClass());
     }
-
-
 
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException() {
