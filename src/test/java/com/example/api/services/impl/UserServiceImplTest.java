@@ -26,10 +26,10 @@ class UserServiceImplTest {
     public static final String NAME = "werner";
     public static final String EMAIL = "werner@gmail.com";
     public static final String PASSWORD = "admin";
-    public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
 
     public static final String EMAIL_JA_CADATRADO_NO_SISTEMA = "E-mail já cadastrado no sistema";
     public static final int INDEX = 0;
+    public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
 
     // adicionando as dependências da classe UserService que vai ser testada
 
@@ -252,6 +252,26 @@ class UserServiceImplTest {
 
         // teste: verifica se o número de vezes que o método foi chamado é igual à 1.
         Mockito.verify(repository, Mockito.times(1)).deleteById(Mockito.anyInt());
+    }
+
+    @Test
+    void DeleteWithObjectNotFoundExpception() {
+
+        // criando o mock:
+        // quando o método findById for chamado, retorne um user uma exceção do tipo ObjectNotFoundException
+        Mockito.when(repository.findById(Mockito.anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+
+        try {
+            // fazendo a requisição
+            service.delete(ID);
+        } catch (Exception ex) {
+
+            // teste: verifique se a classe da exceção é do tipo ObjectNotFoundException
+            Assertions.assertEquals(ObjectNotFoundException.class, ex.getClass());
+
+            // teste: verifique se a mensagem retornada da exceção é: Objeto não encotrado
+            Assertions.assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
+        }
     }
 
     @Test
