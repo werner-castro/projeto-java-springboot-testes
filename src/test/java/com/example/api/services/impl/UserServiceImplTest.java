@@ -238,7 +238,20 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete() {
+    void whenDeleteSuccess() {
+
+        // criando o mock:
+        // quando o método findById for chamado, retorne um user do tipo Optional<User>
+        Mockito.when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
+
+        // não faça nada, quando for chamado o repository.deleteById passando um ID do tipo inteiro.
+        Mockito.doNothing().when(repository).deleteById(Mockito.anyInt());
+
+        // fazendo a requisição
+        service.delete(ID);
+
+        // teste: verifica se o número de vezes que o método foi chamado é igual à 1.
+        Mockito.verify(repository, Mockito.times(1)).deleteById(Mockito.anyInt());
     }
 
     @Test
