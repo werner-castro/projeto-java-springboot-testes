@@ -273,8 +273,4 @@ class UserServiceImplTest {
             Assertions.assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
         }
     }
-
-    @Test
-    void findByEmail() {
-    }
 }
