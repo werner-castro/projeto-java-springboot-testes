@@ -1,5 +1,4 @@
 package com.example.api.resources;
-
 import com.beust.ah.A;
 import com.example.api.domain.User;
 import com.example.api.domain.dto.UserDTO;
@@ -55,7 +54,20 @@ class UserControllerTest {
     }
 
     @Test
-    void create() {
+    void whenCreateReturnCreated() {
+        Mockito.when(service.create(Mockito.any())).thenReturn(user);
+
+        ResponseEntity<UserDTO> response = resource.create(userDTO);
+
+        // teste: verifique se o status da response é do tipo 201 CREATED
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        // teste: no header da response tem que ter a chave location
+        // quando o user é criado é retorno no headers da response um location com uri de acesso do novo objeto
+        Assertions.assertNotNull(response.getHeaders().get("Location"));
+
+        // teste: verifique se a classe da response é do tipo ResponseEntity
+        Assertions.assertEquals(ResponseEntity.class, response.getClass());
     }
 
     @Test
