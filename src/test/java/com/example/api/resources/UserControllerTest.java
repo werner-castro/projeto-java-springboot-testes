@@ -1,5 +1,6 @@
 package com.example.api.resources;
 
+import com.beust.ah.A;
 import com.example.api.domain.User;
 import com.example.api.domain.dto.UserDTO;
 import com.example.api.services.impl.UserServiceImpl;
@@ -12,9 +13,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 class UserControllerTest {
@@ -56,7 +59,45 @@ class UserControllerTest {
     }
 
     @Test
-    void findAll() {
+    void whenfindAllReturnAListofUserDTO() {
+
+        // quando o método find all for chamado, retorne uma lista de users
+        Mockito.when(service.findAll()).thenReturn(List.of(user));
+
+        Mockito.when(mapper.map(Mockito.any(), Mockito.any())).thenReturn(userDTO);
+
+        ResponseEntity<List<UserDTO>> response = resource.findAll();
+
+        // teste: verifique se a response vem vazia
+        Assertions.assertNotNull(service);
+
+        // teste: verifique se a corpo da response vem nula
+        Assertions.assertNotNull(response.getBody());
+
+        // teste: verifique se o status da responde é do tipo 200 OK
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // teste: verifique se o tipo da response é do tipo ResponseEntity
+        Assertions.assertEquals(ResponseEntity.class, response.getClass());
+
+        // teste: verifique se na response vem um ArrayList
+        Assertions.assertEquals(ArrayList.class, response.getBody().getClass());
+
+        // teste: verifique se o ArrayList quem vem no corpo da responde seja do tipo UserDTO
+        // pegando o primento elemento do corpo da response e acessando a sua classe
+        Assertions.assertEquals(UserDTO.class, response.getBody().get(INDEX).getClass());
+
+        // teste: verifique se o ID do primeito elemento no corpo da response seja igual ao ID de teste
+        Assertions.assertEquals(ID, response.getBody().get(INDEX).getId());
+
+        // teste: verifique se o EMAIL do primeito elemento no corpo da response seja igual ao EMAIL de teste
+        Assertions.assertEquals(EMAIL, response.getBody().get(INDEX).getEmail());
+
+        // teste: verifique se o NAME do primeito elemento no corpo da response seja igual ao NAME de teste
+        Assertions.assertEquals(NAME, response.getBody().get(INDEX).getName());
+
+        // teste: verifique se o PASSWORD do primeito elemento no corpo da response seja igual ao PASSWORD de teste
+        Assertions.assertEquals(PASSWORD, response.getBody().get(INDEX).getPassword());
     }
 
     @Test
@@ -101,6 +142,5 @@ class UserControllerTest {
 
         // teste: validação do atributo PASSWORD
         Assertions.assertEquals(PASSWORD, response.getBody().getPassword());
-
     }
 }

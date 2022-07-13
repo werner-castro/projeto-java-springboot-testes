@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.example.api.repositories.UserRepository;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -117,7 +118,7 @@ class UserServiceImplTest {
             Assertions.assertEquals(DataIntegralityViolationException.class, ex.getClass());
 
             // teste: verifique se a mensagem da excessão seja igual à mensagem do DataIntegralityViolationException:
-            // Email já cadrastrado no sistema.
+            // E-mail já cadrastrado no sistema.
             Assertions.assertEquals(EMAIL_JA_CADATRADO_NO_SISTEMA, ex.getMessage());
         }
     }
