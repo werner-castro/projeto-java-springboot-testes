@@ -146,7 +146,24 @@ class UserControllerTest {
     }
 
     @Test
-    void delete() {
+    void whenDeleteThenResturnSuccess() {
+        Mockito.doNothing().when(service).delete(Mockito.anyInt());
+
+        ResponseEntity<UserDTO> response = resource.delete(ID);
+
+        //teste: verificando se a response é nula
+        Assertions.assertNotNull(response);
+
+        //teste: verificando se a classe da response é a mesma do ResponseEntity
+        Assertions.assertEquals(ResponseEntity.class, response.getClass());
+
+        // teste: verificando o número de vezes em que o método delete foi chamado é igual à 1
+        Mockito.verify(service, Mockito.times(1)).delete(Mockito.anyInt());
+
+        // teste: verificando se o status da response é do no_content
+        Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+
     }
 
     @Test
