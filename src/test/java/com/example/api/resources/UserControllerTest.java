@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SpringBootTest
 class UserControllerTest {
@@ -99,21 +100,49 @@ class UserControllerTest {
         // pegando o primento elemento do corpo da response e acessando a sua classe
         Assertions.assertEquals(UserDTO.class, response.getBody().get(INDEX).getClass());
 
-        // teste: verifique se o ID do primeito elemento no corpo da response seja igual ao ID de teste
+        // teste: verifique se o ID do primeiro elemento no corpo da response seja igual ao ID de teste
         Assertions.assertEquals(ID, response.getBody().get(INDEX).getId());
 
-        // teste: verifique se o EMAIL do primeito elemento no corpo da response seja igual ao EMAIL de teste
+        // teste: verifique se o EMAIL do primeiro elemento no corpo da response seja igual ao EMAIL de teste
         Assertions.assertEquals(EMAIL, response.getBody().get(INDEX).getEmail());
 
-        // teste: verifique se o NAME do primeito elemento no corpo da response seja igual ao NAME de teste
+        // teste: verifique se o NAME do primeiro elemento no corpo da response seja igual ao NAME de teste
         Assertions.assertEquals(NAME, response.getBody().get(INDEX).getName());
 
-        // teste: verifique se o PASSWORD do primeito elemento no corpo da response seja igual ao PASSWORD de teste
+        // teste: verifique se o PASSWORD do primeiro elemento no corpo da response seja igual ao PASSWORD de teste
         Assertions.assertEquals(PASSWORD, response.getBody().get(INDEX).getPassword());
     }
 
     @Test
-    void update() {
+    void whenReturnThenReturnSuccess() {
+        Mockito.when(service.update(userDTO)).thenReturn(user);
+        Mockito.when(mapper.map(Mockito.any(), Mockito.any())).thenReturn(userDTO);
+
+        ResponseEntity<UserDTO> response = resource.update(ID, userDTO);
+
+        // teste: verificando se a response é nula
+        Assertions.assertNotNull(response);
+
+        // teste: verificando se o corpo da resquisição está nula
+        Assertions.assertNotNull(response.getBody());
+
+        // teste: verificando se o status da requisição é sucesso 200
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // teste: verifique se tipo da classe retornada na response seja do mesmo tipo ResponseEntity
+        Assertions.assertEquals(ResponseEntity.class, response.getClass());
+
+        // teste: verificando se a classe da response é do tipo UserDTO
+        Assertions.assertEquals(UserDTO.class, response.getBody().getClass());
+
+        // teste: validação do atributo ID
+        Assertions.assertEquals(ID, response.getBody().getId());
+
+        // teste: validação do atributo NAME
+        Assertions.assertEquals(NAME, response.getBody().getName());
+
+        // teste: validação do atributo EMAIL
+        Assertions.assertEquals(EMAIL, response.getBody().getEmail());
     }
 
     @Test
