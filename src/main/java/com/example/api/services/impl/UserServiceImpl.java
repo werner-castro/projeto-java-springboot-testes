@@ -6,6 +6,7 @@ import com.example.api.repositories.UserRepository;
 import com.example.api.services.UserService;
 import com.example.api.services.exceptions.DataIntegralityViolationException;
 import com.example.api.services.exceptions.ObjectNotFoundException;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
         repository.deleteById(id);
     }
 
-    public void findByEmail(UserDTO obj){
+    public void findByEmail(@NotNull UserDTO obj){
         Optional<User> user = repository.findByEmail(obj.getEmail());
         if( user.isPresent() && !user.get().getId().equals(obj.getId()) ){
             throw new DataIntegralityViolationException("E-mail já cadastrado no sistema");
