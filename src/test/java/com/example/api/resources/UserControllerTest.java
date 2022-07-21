@@ -1,5 +1,4 @@
 package com.example.api.resources;
-import com.beust.ah.A;
 import com.example.api.domain.User;
 import com.example.api.domain.dto.UserDTO;
 import com.example.api.services.impl.UserServiceImpl;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @SpringBootTest
 class UserControllerTest {
@@ -162,8 +160,6 @@ class UserControllerTest {
 
         // teste: verificando se o status da response é do no_content
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-
-
     }
 
     @Test
