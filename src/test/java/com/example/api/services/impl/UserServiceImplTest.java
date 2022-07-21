@@ -7,13 +7,11 @@ import com.example.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.example.api.repositories.UserRepository;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -117,7 +115,7 @@ class UserServiceImplTest {
             Assertions.assertEquals(DataIntegralityViolationException.class, ex.getClass());
 
             // teste: verifique se a mensagem da excessão seja igual à mensagem do DataIntegralityViolationException:
-            // Email já cadrastrado no sistema.
+            // E-mail já cadrastrado no sistema.
             Assertions.assertEquals(EMAIL_JA_CADATRADO_NO_SISTEMA, ex.getMessage());
         }
     }
@@ -272,9 +270,5 @@ class UserServiceImplTest {
             // teste: verifique se a mensagem retornada da exceção é: Objeto não encotrado
             Assertions.assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
         }
-    }
-
-    @Test
-    void findByEmail() {
     }
 }
